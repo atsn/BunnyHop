@@ -19,7 +19,7 @@ public class BunnyHopMain extends ApplicationAdapter
 
 	private WorldController worldController;
 	private WorldRenderer worldRenderer;
-	private boolean paused;
+	public boolean paused;
 
 	@Override
 	public void create()
@@ -42,7 +42,6 @@ public class BunnyHopMain extends ApplicationAdapter
 	{
 		// Update game world by the time that has passed since last rendered
 		// frame.
-		worldController.update(MathUtils.clamp(Gdx.graphics.getDeltaTime(),0,0.05f));
 
 		// Sets the clear screen color to: Cornflower Blue
 		Gdx.gl.glClearColor(0x64 / 255.0f, 0x95 / 255.0f, 0xed / 255.0f, 0xff / 255.0f);
@@ -55,8 +54,9 @@ public class BunnyHopMain extends ApplicationAdapter
 
 		if (!paused)
 		{ // Do not update game world when paused.
-			// Update game world by the time that has passed since last rendered
-			// frame.
+			// Update game world by the time that has passed since last rendered frame.
+			worldController.update(MathUtils.clamp(Gdx.graphics.getDeltaTime(),0,0.05f));
+			// Game is being updated twice to give more speed
 			worldController.update(MathUtils.clamp(Gdx.graphics.getDeltaTime(),0,0.05f));
 		}
 	}

@@ -18,6 +18,7 @@ import ie.wit.cgd.bunnyhop.game.objects.GoldCoin;
 import ie.wit.cgd.bunnyhop.game.objects.Ladder;
 import ie.wit.cgd.bunnyhop.game.objects.Mountains;
 import ie.wit.cgd.bunnyhop.game.objects.Rock;
+import ie.wit.cgd.bunnyhop.game.objects.Star;
 import ie.wit.cgd.bunnyhop.game.objects.WaterOverlay;
 
 public class Level
@@ -37,7 +38,8 @@ public class Level
 		ENEMY_FOX(112, 146, 190), // gray/blue
 		ITEM_EXTRALIFEBUNNIES(0, 0, 255), // blue
 		ENEMY_FIRE(185, 122, 87), // brown
-		ITEM_LADDER(220, 220, 220); // gray
+		ITEM_LADDER(220, 220, 220), // gray
+		ITEM_Star(0, 128, 64); // DarkGreen
 
 		private int color;
 
@@ -65,11 +67,12 @@ public class Level
 	public Array<ExtraLifeBunny> extraLifeBunnies;
 	public Array<Fire> fire;
 	public Array<Ladder> ladders;
-	// decoration
-	public Clouds clouds;
 	public BunnyHead bunnyHead;
 	public Array<GoldCoin> goldCoins;
 	public Array<Feather> feathers;
+	public Array<Star> stars;
+	// decoration
+	public Clouds clouds;
 	public Mountains mountains;
 	public WaterOverlay waterOverlay;
 	
@@ -94,6 +97,7 @@ public class Level
 		extraLifeBunnies = new Array<ExtraLifeBunny>();
 		fire = new Array<Fire>();
 		ladders = new Array<Ladder>();
+		stars = new Array<Star>();
 
 		// load image file that represents the level data
 		Pixmap pixmap = new Pixmap(Gdx.files.internal(filename));
@@ -197,6 +201,13 @@ public class Level
 					obj.position.set(pixelX, baseHeight * obj.dimension.y + offsetHeight);
 					ladders.add((Ladder) obj);
 				}
+				else if (BLOCK_TYPE.ITEM_Star.sameColor(currentPixel))
+				{ // Ladder
+					obj = new Star();
+					offsetHeight = -1.5f;
+					obj.position.set(pixelX, baseHeight * obj.dimension.y + offsetHeight);
+					stars.add((Star) obj);
+				}
 				
 				else
 				{ // unknown object/pixel color
@@ -249,16 +260,20 @@ public class Level
 		{
 			fox.render(batch);
 		}
-		for (ExtraLifeBunny extraLifeBunny : extraLifeBunnies)
+		for (ExtraLifeBunny extraLifeBunny : extraLifeBunnies) // draw extralifebunnies
 		{
 			extraLifeBunny.render(batch);
 		}
 
-		for (Fire fire : fire) // Draw Foxex
+		for (Fire fire : fire) // Draw Fire
 		{
 			fire.render(batch);
 		}
 		
+		for (Star star : stars) // Draw Stars
+		{
+			star.render(batch);
+		}
 
 	}
 
@@ -294,6 +309,10 @@ public class Level
 		for (Ladder ladder : ladders)
 		{
 			ladder.update(deltaTime);
+		}
+		for (Star star : stars) // Draw Stars
+		{
+			star.update(deltaTime);
 		}
 
 	}

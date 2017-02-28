@@ -33,6 +33,9 @@ public class BunnyHead extends AbstractGameObject
 	public float timeLeftFeatherPowerup;
 	public boolean hasCarrotPowerup;
 	public boolean ishit;
+	public boolean hasstar;
+	public float StarTimeLeft;
+	public float colertime;
 
 	public BunnyHead()
 	{
@@ -62,6 +65,8 @@ public class BunnyHead extends AbstractGameObject
 		hasFeatherPowerup = false; // Power-ups
 		hasCarrotPowerup = false;
 		timeLeftFeatherPowerup = 0;
+		hasstar = false;
+		StarTimeLeft = 0;
 	};
 
 	public void setJumping(boolean jumpKeyPressed)
@@ -105,7 +110,21 @@ public class BunnyHead extends AbstractGameObject
 			timeLeftFeatherPowerup = Constants.ITEM_FEATHER_POWERUP_DURATION;
 		}
 	}
+	
+	public void setStarPowerup(boolean pickedUp)
+	{
+		hasstar = pickedUp;
+		colertime = 1;
+		if (pickedUp)
+		{
+			StarTimeLeft = Constants.ITEM_FEATHER_POWERUP_DURATION +2;
+		}
+	}
 
+	public boolean hasStarPowerup()
+	{
+		return hasstar && StarTimeLeft > 0;
+	}
 	public boolean hasFeatherPowerup()
 	{
 		return hasFeatherPowerup && timeLeftFeatherPowerup > 0;
@@ -137,6 +156,25 @@ public class BunnyHead extends AbstractGameObject
 				// disable power-up
 				timeLeftFeatherPowerup = 0;
 				setFeatherPowerup(false);
+			}
+		}
+		
+		if (StarTimeLeft > 0)
+		{
+			StarTimeLeft -= deltaTime;
+			
+			if (colertime >1) colertime = 0;
+			{
+				
+			}
+			if (colertime >= 0) colertime += deltaTime;
+			
+			
+			if (StarTimeLeft < 0)
+			{
+				// disable power-up
+				StarTimeLeft = 0;
+				setStarPowerup(false);
 			}
 		}
 
@@ -187,11 +225,18 @@ public class BunnyHead extends AbstractGameObject
 	public void render(SpriteBatch batch)
 	{
 		TextureRegion reg = null;
-
-		// Set special color when game object has a feather power-up
-		if (hasFeatherPowerup) batch.setColor(1.0f, 0.8f, 0.0f, 1.0f);
-		// Draw image
+		// Set special color when game object is in a speciel state
+		if (hasFeatherPowerup && ! hasStarPowerup()) batch.setColor(1.0f, 0.8f, 0.0f, 1.0f);
 		if (ishit) batch.setColor(1.0f, 0.0f, 0.0f, 1.0f);
+		if (hasstar){
+			if (colertime == 0f) batch.setColor(1.0f, 0.0f, 0.0f, 1.0f);
+			else if (colertime > 0.75) batch.setColor(1.0f, 0.8f, 0.0f, 1.0f);
+			else if (colertime > 0.5) batch.setColor(1.0f, 0.0f, 0.8f, 1.0f);
+			else if (colertime > 0.25) batch.setColor(1.0f, 0.0f, 0.0f, 1.0f);
+			else if (colertime > 0.0) batch.setColor(1.0f, 0.8f, 1.0f, 1.0f);
+		}
+		
+		// Draw image
 		reg = regHead;
 		batch.draw(reg.getTexture(), position.x, position.y, origin.x, origin.y, dimension.x, dimension.y, scale.x, scale.y, rotation, reg.getRegionX(), reg.getRegionY(), reg.getRegionWidth(),
 				reg.getRegionHeight(), viewDirection == VIEW_DIRECTION.LEFT, false);

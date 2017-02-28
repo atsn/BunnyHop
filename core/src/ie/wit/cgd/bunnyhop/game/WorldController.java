@@ -9,11 +9,14 @@ import com.badlogic.gdx.InputAdapter;
 import ie.wit.cgd.bunnyhop.util.CameraHelper;
 import com.badlogic.gdx.utils.Array;
 import ie.wit.cgd.bunnyhop.game.objects.Rock;
+import ie.wit.cgd.bunnyhop.game.objects.Star;
 import ie.wit.cgd.bunnyhop.util.Constants;
 import ie.wit.cgd.bunnyhop.util.Objectives;
 import ie.wit.cgd.bunnyhop.util.Objectives.ObjectiveType;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
+
+import ie.wit.cgd.bunnyhop.BunnyHopMain;
 import ie.wit.cgd.bunnyhop.game.objects.BunnyHead;
 import ie.wit.cgd.bunnyhop.game.objects.BunnyHead.JUMP_STATE;
 import ie.wit.cgd.bunnyhop.game.objects.Carrot;
@@ -48,6 +51,7 @@ public class WorldController extends InputAdapter
 	private float forcedcameraspeed;
 	boolean hitLeftEdge;
 	boolean islastlevel;
+	BunnyHopMain main = new BunnyHopMain();
 	ControllerEventListener xbox = new ControllerEventListener()
 	{
 
@@ -194,6 +198,7 @@ public class WorldController extends InputAdapter
 
 	private void onCollisionBunnyWithfox(Fox fox)
 	{
+
 		float heightDifference = Math.abs(level.bunnyHead.position.y - (fox.position.y + fox.bounds.height));
 		if (heightDifference < 0.1f)
 		{
@@ -204,8 +209,18 @@ public class WorldController extends InputAdapter
 			return;
 		}
 
-		ishit = true;
-		level.bunnyHead.ishit = true;
+		if (!level.bunnyHead.hasstar)
+		{
+			ishit = true;
+			level.bunnyHead.ishit = true;
+		}
+		else
+		{
+			fox.isdead = true;
+			score += fox.getscore();
+			return;
+		}
+
 	}
 
 	private void onCollisionBunnyWithextraLifeBunny(ExtraLifeBunny extraLifeBunny)
@@ -220,8 +235,12 @@ public class WorldController extends InputAdapter
 
 	private void onCollisionBunnyWithFire()
 	{
-		ishit = true;
-		level.bunnyHead.ishit = true;
+		if (!level.bunnyHead.hasStarPowerup())
+		{
+			ishit = true;
+			level.bunnyHead.ishit = true;
+		}
+
 	}
 
 	private void onCollisionBunnyWithladder()
@@ -241,6 +260,13 @@ public class WorldController extends InputAdapter
 			level.bunnyHead.velocity.y = 0;
 		}
 
+	}
+
+	private void onCollisionBunnyWithstar(Star star)
+	{
+		star.collected = true;
+		level.bunnyHead.setStarPowerup(true);
+		Gdx.app.log(TAG, "star collected");
 	}
 
 	private void testCollisions()
@@ -330,9 +356,19 @@ public class WorldController extends InputAdapter
 			break;
 		}
 
+		for (Star star : level.stars)
+		{
+			r2.set(star.position.x, star.position.y, star.bounds.width, star.bounds.height);
+			if (!r1.overlaps(r2)) continue;
+			onCollisionBunnyWithstar(star);
+
+			break;
+		}
+
 	}
 
-	// This methods make sure that the fox is on a rock && that they move both ways
+	// This methods make sure that the fox is on a rock && that they move both
+	// ways
 	public void keepFoxOnRock()
 	{
 		for (Fox fox : level.foxes)
@@ -366,7 +402,6 @@ public class WorldController extends InputAdapter
 		}
 	}
 
-	
 	// This methods make sure that the Fire is on a rock
 	public void keepFiregroundlevel()
 	{
@@ -396,7 +431,8 @@ public class WorldController extends InputAdapter
 		{
 		case 1:
 			level = new Level(Constants.LEVEL_01);
-			objectiv.setObjective(30, ObjectiveType.COLECT_COINS); // set objectiv
+			objectiv.setObjective(30, ObjectiveType.COLECT_COINS); // set
+																	// objectiv
 
 			break;
 		case 2:
@@ -405,18 +441,21 @@ public class WorldController extends InputAdapter
 			break;
 		case 3:
 			level = new Level(Constants.LEVEL_03);
-			objectiv.setObjective(2, ObjectiveType.COLLECT_CARROTS); // set objectiv
+			objectiv.setObjective(2, ObjectiveType.COLLECT_CARROTS); // set
+																		// objectiv
 			break;
 		case 4:
 			level = new Level(Constants.LEVEL_04);
-			objectiv.setObjective(1500, ObjectiveType.GET_SCORE); // set objectiv
+			objectiv.setObjective(1500, ObjectiveType.GET_SCORE); // set
+																	// objectiv
 			break;
 		case 5:
 			level = new Level(Constants.LEVEL_05);
 			break;
 		case 6:
 			level = new Level(Constants.LEVEL_06);
-			objectiv.setObjective(5000, ObjectiveType.GET_SCORE); // set objectiv
+			objectiv.setObjective(5000, ObjectiveType.GET_SCORE); // set
+																	// objectiv
 			forcedMovement = true;
 			forcedcameraspeed = 2.5f; // set the speed of the bunny
 			islastlevel = true;
@@ -608,6 +647,7 @@ public class WorldController extends InputAdapter
 			objectiv.init();
 		}
 		if (keycode == Keys.NUMPAD_5) onCollisionBunnyWithCarrot(new Carrot());
+		if (keycode == Keys.NUMPAD_6) onCollisionBunnyWithstar(new Star());
 		else if (keycode == Keys.ENTER)
 		{ // Toggle camera follow
 			cameraHelper.setTarget(cameraHelper.hasTarget() ? null : level.bunnyHead);
@@ -625,4 +665,5 @@ public class WorldController extends InputAdapter
 		return false;
 	}
 	//
+
 }

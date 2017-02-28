@@ -126,10 +126,11 @@ public class WorldRenderer implements Disposable
 		// draw FPS text (anchored to bottom right edge)
 		renderGuiFpsCounter(batch);
 
-		renderGuiFeatherPowerup(batch);
+		renderGuiFeatherandacarrotPowerup(batch);
 		renderGuiGameOverMessage(batch);
 		renderGuiObjectiveFailed(batch);
 		renderGuiBeginLevelText(batch);
+		renderGuiStarPowerup(batch);
 		RenderObjective(batch);
 		batch.end();
 
@@ -242,34 +243,34 @@ public class WorldRenderer implements Disposable
 
 		if (worldController.objectiv.isobectivetype(ObjectiveType.COLECT_COINS))
 		{
-			batch.draw(Assets.instance.goldCoin.goldCoin, x, y, 50, 110, 100, 100, 0.5f, -0.5f, 0);
+			batch.draw(Assets.instance.goldCoin.goldCoin, x, y, 50, 130, 100, 100, 0.5f, -0.5f, 0);
 			batch.setColor(1, 1, 1, 1);
-			Assets.instance.fonts.defaultNormal.draw(batch, "" + (int) counter + " / " + (int) objevtivgoal, x + 80, y + 130);
+			Assets.instance.fonts.defaultNormal.draw(batch, "" + (int) counter + " / " + (int) objevtivgoal, x + 80, y + 150);
 		}
 
 		else if (worldController.objectiv.isobectivetype(ObjectiveType.TIMELIMIT))
 		{
-			batch.draw(Assets.instance.clock.clock, x, y, 50, 110, 100, 100, 0.5f, -0.5f, 0);
+			batch.draw(Assets.instance.clock.clock, x, y, 50, 130, 100, 100, 0.5f, -0.5f, 0);
 			batch.setColor(1, 1, 1, 1);
-			Assets.instance.fonts.defaultNormal.draw(batch, "" + (int) counter, x + 80, y + 130);
+			Assets.instance.fonts.defaultNormal.draw(batch, "" + (int) counter, x + 80, y + 150);
 		}
 
 		else if (worldController.objectiv.isobectivetype(ObjectiveType.COLLECT_CARROTS))
 		{
-			batch.draw(Assets.instance.carrot.carrot, x, y, 50, 110, 100, 100, 0.5f, -0.5f, 0);
+			batch.draw(Assets.instance.carrot.carrot, x, y, 50, 130, 100, 100, 0.5f, -0.5f, 0);
 			batch.setColor(1, 1, 1, 1);
-			Assets.instance.fonts.defaultNormal.draw(batch, "" + (int) counter + " / " + (int) objevtivgoal, x + 80, y + 130);
+			Assets.instance.fonts.defaultNormal.draw(batch, "" + (int) counter + " / " + (int) objevtivgoal, x + 80, y + 150);
 		}
 
 		else if (worldController.objectiv.isobectivetype(ObjectiveType.GET_SCORE))
 		{
-			batch.draw(Assets.instance.score.score, x, y, 50, 110, 100, 100, 0.5f, -0.5f, 0);
+			batch.draw(Assets.instance.score.score, x, y, 50, 130, 100, 100, 0.5f, -0.5f, 0);
 			batch.setColor(1, 1, 1, 1);
-			Assets.instance.fonts.defaultNormal.draw(batch, "" + (int) counter + " / " + (int) objevtivgoal, x + 80, y + 130);
+			Assets.instance.fonts.defaultNormal.draw(batch, "" + (int) counter + " / " + (int) objevtivgoal, x + 80, y + 150);
 		}
 	}
 
-	private void renderGuiFeatherPowerup(SpriteBatch batch)
+	private void renderGuiFeatherandacarrotPowerup(SpriteBatch batch)
 	{
 		float x = -15;
 		float y = 30;
@@ -294,6 +295,29 @@ public class WorldRenderer implements Disposable
 		{
 			batch.draw(Assets.instance.carrot.carrot, x, y, 50, 75, 100, 100, 0.35f, -0.35f, 0);
 			batch.setColor(1, 1, 1, 1);
+		}
+	}
+	
+	private void renderGuiStarPowerup(SpriteBatch batch)
+	{
+		float x = -15;
+		float y = 30;
+		float startimeleft = worldController.level.bunnyHead.StarTimeLeft;
+		if (startimeleft > 0)
+		{
+			// Start icon fade in/out if the left power-up time
+			// is less than 4 seconds. The fade interval is set
+			// to 5 changes per second.
+			if (startimeleft < 4)
+			{
+				if (((int) (startimeleft * 5) % 2) != 0)
+				{
+					batch.setColor(1, 1, 1, 0.5f);
+				}
+			}
+			batch.draw(Assets.instance.star.star, x, y, 50, 100, 100, 100, 0.35f, -0.35f, 0);
+			batch.setColor(1, 1, 1, 1);
+			Assets.instance.fonts.defaultNormal.draw(batch, "" + (int) startimeleft, x + 65, y + 117);
 		}
 	}
 }

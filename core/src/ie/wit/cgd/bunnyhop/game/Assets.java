@@ -32,6 +32,8 @@ public class Assets implements Disposable, AssetErrorListener
 	public AssetScore score;
 	public AssetFire fire;
 	public AssetLadder ladder;
+	public AssetStar star;
+	
 	public class AssetFonts
 	{
 		public final BitmapFont defaultSmall;
@@ -96,6 +98,7 @@ public class Assets implements Disposable, AssetErrorListener
 		score = new AssetScore(atlas);
 		fire = new AssetFire(atlas);
 		ladder = new AssetLadder(atlas);
+		star = new AssetStar(atlas);
 	}
 
 	@Override
@@ -235,6 +238,16 @@ public class Assets implements Disposable, AssetErrorListener
 		public AssetLadder(TextureAtlas atlas)
 		{
 			ladder = atlas.findRegion("Ladder");
+		}
+	}
+	
+	public class AssetStar
+	{
+		public final AtlasRegion star;
+
+		public AssetStar(TextureAtlas atlas)
+		{
+			star = atlas.findRegion("star");
 		}
 	}
 
