@@ -57,7 +57,7 @@ public class BunnyHopMain extends ApplicationAdapter
 		{ // Do not update game world when paused.
 			// Update game world by the time that has passed since last rendered
 			// frame.
-			//worldController.update(MathUtils.clamp(Gdx.graphics.getDeltaTime(),0,0.05f));
+			worldController.update(MathUtils.clamp(Gdx.graphics.getDeltaTime(),0,0.05f));
 		}
 	}
 
