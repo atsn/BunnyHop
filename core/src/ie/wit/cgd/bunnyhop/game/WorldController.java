@@ -51,6 +51,7 @@ public class WorldController extends InputAdapter
 	private float forcedcameraspeed;
 	boolean hitLeftEdge;
 	boolean islastlevel;
+	private Boolean HaveForcedMovement = false;
 	BunnyHopMain main = new BunnyHopMain();
 	ControllerEventListener xbox = new ControllerEventListener()
 	{
@@ -653,13 +654,15 @@ public class WorldController extends InputAdapter
 			cameraHelper.setTarget(cameraHelper.hasTarget() ? null : level.bunnyHead);
 			if (forcedMovement)
 			{
+				HaveForcedMovement = true;
 				forcedMovement = false;
 			}
-
-			else
+			else if (HaveForcedMovement)
 			{
 				forcedMovement = true;
+				HaveForcedMovement = false;
 			}
+
 			Gdx.app.debug(TAG, "Camera follow enabled: " + cameraHelper.hasTarget());
 		}
 		return false;
